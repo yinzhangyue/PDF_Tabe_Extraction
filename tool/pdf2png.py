@@ -13,10 +13,13 @@ def pdf2png(filepath, filename, save=False, savepath=None):
     save：是否保存
     savepath: 保存路径
     
-    return: list 包含pdf转换后每张图片的矩阵形式
+    return: 
+    img_cvs：list 包含pdf转换后每张图片的矩阵形式
+    img_names：list 包含每张图片的名称
     '''
     doc = fitz.open(filepath + '/' + filename)
     img_cvs = []
+    img_names = []
     for pg in range(doc.pageCount):
         page = doc[pg]
         rotate = int(0)
@@ -28,17 +31,24 @@ def pdf2png(filepath, filename, save=False, savepath=None):
         # print(pm)
 
         getpngdata = pm.getImageData(output="png")
+
         # 解码为 np.uint8
         image_array = np.frombuffer(getpngdata, dtype=np.uint8)
         img_cv = cv2.imdecode(image_array, cv2.IMREAD_ANYCOLOR)
-        cv2.imshow("Image", cv2.resize(img_cv, (540, 800)))
-        cv2.waitKey(0)
+
+        # 显示图片
+        # cv2.imshow("Image", cv2.resize(img_cv, (540, 800)))
+        # cv2.waitKey(0)
+
+        img_cv = cv2.resize(img_cv, (2100, 2970))
         img_cvs.append(img_cv)
         if save is True:
             assert savepath is not None, 'savepath is empty'
-            pm.writePNG(savepath + '/%s.png' % pg)
-    return img_cvs
+            # pm.writePNG(savepath + '/%s.png' % pg)
+            cv2.imwrite(savepath + '/%s.png' % pg, img_cv)
+            img_names.append('%s.png' % pg)
+    return img_cvs, img_names
 
 
 # if __name__ == "__main__":
-#     pdf2png(".", "1.pdf")
+#     pdf2png(".", "aapl-20200926.pdf", save=True, savepath="./pict")
