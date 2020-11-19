@@ -56,44 +56,51 @@ def power1to2(pngpath, img_names, coordinates, savepath):
                 # print(cropped)
                 start_x = int(i[0])
                 start_y = int(i[1])
-                cv2.imwrite(savepath + '/img/' + str(j) + img_name, cropped)
+                cv2.imwrite(savepath + '/img/' + chr(97 + j) + img_name,
+                            cropped)
                 # print(img_name)
                 j += 1
 
         # Json
-        data = {}
-        data['chunk'] = []
+        j = 0
+        for i in coordinate[2]:
+            start_x = int(i[0])
+            start_y = int(i[1])
+            data = {}
+            data['chunk'] = []
 
-        for i in coordinate[1]:
-            if i[4] > 0.7:
-                cropped = img[int(i[1]):int(i[3]),
-                              int(i[0]):int(i[2])]  # 裁剪坐标为[y0:y1, x0:x1]
-                # print(cropped)
-                ocr = CnOcr(name='instance' + str(s))
-                s += 1
-                # print(ocr.ocr(cropped))
-                text = ""
-                res_ocrs = ocr.ocr(cropped)
-                if res_ocrs != []:
-                    for res_ocr in res_ocrs:
-                        for res in res_ocr:
-                            text = text + res
+            for c in coordinate[1]:
+                if c[4] > 0.7 and c[0] >= i[0] and c[1] >= i[1] and c[2] <= i[
+                        2] and c[3] <= i[3]:  # 单元格在该表格范围内
+                    cropped = img[int(c[1]):int(c[3]),
+                                  int(c[0]):int(c[2])]  # 裁剪坐标为[y0:y1, x0:x1]
+                    # print(cropped)
+                    ocr = CnOcr(name='instance' + str(s))
+                    s += 1
+                    # print(ocr.ocr(cropped))
+                    text = ""
+                    res_ocrs = ocr.ocr(cropped)
+                    if res_ocrs != []:
+                        for res_ocr in res_ocrs:
+                            for res in res_ocr:
+                                text = text + res
 
-                # text = "".join(ocr.ocr(cropped)[0])
-                tmp = {}
-                tmp["pos"] = [
-                    i[0] - start_x, i[2] - start_x, i[1] - start_y,
-                    i[3] - start_y
-                ]
-                for x in range(4):
-                    if tmp["pos"][x] < 0:
-                        tmp["pos"][x] = 0
+                    # text = "".join(ocr.ocr(cropped)[0])
+                    tmp = {}
+                    tmp["pos"] = [
+                        c[0] - start_x, c[2] - start_x, c[1] - start_y,
+                        c[3] - start_y
+                    ]
+                    # for x in range(4):
+                    #     if tmp["pos"][x] < 0:
+                    #         tmp["pos"][x] = 0
 
-                tmp["text"] = text
-                data['chunk'].append(tmp)
+                    tmp["text"] = text
+                    data['chunk'].append(tmp)
 
-        with open(savepath + '/chunk/' + img_name + ".json",
-                  'w',
-                  encoding='utf-8') as json_file:
-            json.dump(data, json_file, ensure_ascii=False,
-                      indent=2)  # 缩进两个字符输出
+            with open(savepath + '/chunk/' + chr(97 + j) + img_name + ".json",
+                      'w',
+                      encoding='utf-8') as json_file:
+                json.dump(data, json_file, ensure_ascii=False,
+                          indent=2)  # 缩进两个字符输出
+            j += 1
