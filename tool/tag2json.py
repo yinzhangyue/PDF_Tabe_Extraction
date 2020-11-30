@@ -78,7 +78,8 @@ def tag2json(tagpath,
 
     data = {}
     data["chunks"] = chunks
-    # print(data)
+
+    # print(json.dumps(data, indent=2))
     with open(save_jsonpath + '/' + save_jsonname, 'w',
               encoding='utf-8') as json_file:
         json.dump(data, json_file, ensure_ascii=False, indent=2)  # 缩进两个字符输出
