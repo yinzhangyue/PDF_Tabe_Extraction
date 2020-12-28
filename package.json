@@ -1,12 +1,14 @@
 {
-  "name": "pdf-tool",
-  "description": "-",
-  "version": "0.0.1",
-  "private": true,
-  "main": "app.js",
-  "dependencies": {
-    "express": "3.x",
-    "express-generator": "^4.16.1",
-    "path": "^0.12.7"
-  }
+    "name": "pdf-tool",
+    "description": "-",
+    "version": "0.0.1",
+    "private": true,
+    "main": "app.js",
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "express": "^4.17.1",
+        "element-ui": "^2.14.1",
+        "express-generator": "^4.16.1",
+        "path": "^0.12.7"
+    }
 }
