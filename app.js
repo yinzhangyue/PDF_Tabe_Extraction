@@ -58,12 +58,23 @@ app.get('/', function(req, res) {
     // } else {
     //     res.redirect('/news?title=' + Request.title + '&kw=' + Request.kw + '&content=' + Request.content);
     // }
-    res.render('browsePDF');
-    // res.render('home');
+    // res.render('browsePDF');
+    res.render('home');
     // res.redirect('/news');
     // res.send(req.body);
 
 });
+
+
+app.get('/pdf', function(req, res) {
+    res.render('browsePDF');
+});
+
+
+app.get('/try', function(req, res) {
+    res.render('try');
+});
+
 
 //////////////////////////////////////////////////error///////////////////////////////////////////////////
 app.use(function(req, res) {
