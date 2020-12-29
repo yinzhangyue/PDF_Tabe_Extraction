@@ -10,6 +10,7 @@
         "express": "^4.17.1",
         "express-generator": "^4.16.1",
         "path": "^0.12.7",
+        "pdfobject": "^2.2.4",
         "serve": "^11.3.2",
         "uglify-es": "^3.3.9"
     }

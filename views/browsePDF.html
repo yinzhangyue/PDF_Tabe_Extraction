@@ -51,8 +51,24 @@
             <el-container>
                 <el-main height="1000">
                     <div id="pdf">
-                        <embed src="http://localhost:8080/views/test.pdf" class="pdfobject" width="100%" height="1000" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">
+                        <!-- <embed src="http://localhost:8080/views/test.pdf" class="pdfobject" width="100%" height="1000" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html"> -->
                     </div>
+                    <script type="text/javascript">
+                        // if (PDFObject.supportsPDFs) {
+                        //     console.log("Yay, this browser supports inline PDFs.");
+                        // } else {
+                        //     console.log("Boo, inline PDFs are not supported by this browser");
+                        // }
+                        var options = {
+                            pdfOpenParams: {
+                                view: 'FitV'
+                            }
+                        };
+                        window.onload = function() {
+                            PDFObject.embed("http://localhost:8080/views/test.pdf", "#pdf", options);
+                        }
+                        console.log(PDFObject.pdfobjectversion);
+                    </script>
                 </el-main>
                 <el-aside width="300px" style="background-color: rgb(238, 241, 246)">
                     <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
@@ -114,7 +130,7 @@
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <!-- import JavaScript -->
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script src="/views/PDFObject/pdfobject.js"></script>
+<script src="js/pdfobject.js"></script>
 
 <script>
     new Vue({

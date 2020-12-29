@@ -4,6 +4,9 @@ var PORT = 3000;
 
 ////////////////////////////////////////////////Dependency////////////////////////////////////////////////
 var path = require('path');
+var http = require('http');
+var fs = require('fs');
+var url = require('url');
 var bodyParser = require('body-parser');
 var ejs = require('ejs');
 var express = require('express');
@@ -12,15 +15,12 @@ var app = express();
 
 ////////////////////////////////////////////////Settings//////////////////////////////////////////////////
 app.set('port', 3000);
-// var server = app.listen(PORT, function() {
-//     console.log('Listening on port %d', server.address().port);
-// });
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.engine('html', ejs.renderFile);
-// app.engine('html', ejs.__express);
 app.set('view engine', 'html');
-
+app.engine('html', ejs.renderFile);
+// app.set("engine", "ejs");
 
 
 ////////////////////////////////////////////////Midware///////////////////////////////////////////////////
@@ -28,7 +28,7 @@ app.use(function(req, res, next) {
     res.locals.showTests = app.get('env') != 'production' && req.query.showTests === '1';
     next();
 });
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/views'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
@@ -73,6 +73,10 @@ app.get('/pdf', function(req, res) {
 
 app.get('/try', function(req, res) {
     res.render('try');
+    // var readFile = "views/try.html";
+    // var fileContents = fs.readFileSync(readFile);
+
+    // res.send(fileContents.toString())
 });
 
 
