@@ -6,9 +6,11 @@
     "main": "app.js",
     "dependencies": {
         "body-parser": "^1.19.0",
+        "element-theme-default": "^1.4.13",
         "element-ui": "^2.14.1",
         "express": "^4.17.1",
         "express-generator": "^4.16.1",
+        "jquery": "^3.5.1",
         "path": "^0.12.7",
         "pdfobject": "^2.2.4",
         "serve": "^11.3.2",

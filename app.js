@@ -18,8 +18,8 @@ app.set('port', 3000);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
+app.set('view engine', 'html');
 // app.set("engine", "ejs");
 
 
@@ -59,7 +59,7 @@ app.get('/', function(req, res) {
     //     res.redirect('/news?title=' + Request.title + '&kw=' + Request.kw + '&content=' + Request.content);
     // }
     // res.render('browsePDF');
-    res.render('home');
+    res.render('home.ejs', {title: 'EJS'});
     // res.redirect('/news');
     // res.send(req.body);
 
@@ -67,12 +67,12 @@ app.get('/', function(req, res) {
 
 
 app.get('/pdf', function(req, res) {
-    res.render('browsePDF');
+    res.render('browsePDF.html', {title: 'HTML'});
 });
 
 
 app.get('/try', function(req, res) {
-    res.render('try');
+    res.render('try.html', {title: 'HTML'});
     // var readFile = "views/try.html";
     // var fileContents = fs.readFileSync(readFile);
 

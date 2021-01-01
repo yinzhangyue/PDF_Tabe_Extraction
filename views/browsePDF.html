@@ -7,6 +7,27 @@
     <!-- 引入样式 -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="/css/layout.css">
+
+    <!-- import Vue before Element -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="js/pdfobject.js"></script>
+    <script src="js/jquery.js" charset="UTF-8"></script>
+    <script src="js/my_jquery_functions.js"></script>
+    <style type="text/css">
+        html,
+        body,
+        #app,
+        .el-container {
+            /*设置内部填充为0，几个布局元素之间没有间距*/
+            padding: 0px;
+            /*外部间距也是如此设置*/
+            margin: 0px;
+            /*统一设置高度为100%*/
+            height: 100%;
+        }
+    </style>
 </head>
 
 <body>
@@ -31,44 +52,13 @@
                     <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
                 </el-menu>
                 <div class="line"></div>
-
-                <script>
-                    export default {
-                        data() {
-                            return {
-                                activeIndex: '1',
-                                activeIndex2: '1'
-                            };
-                        },
-                        methods: {
-                            handleSelect(key, keyPath) {
-                                console.log(key, keyPath);
-                            }
-                        }
-                    }
-                </script>
             </el-header>
             <el-container>
-                <el-main height="1000">
+                <el-main>
                     <div id="pdf">
                         <!-- <embed src="http://localhost:8080/views/test.pdf" class="pdfobject" width="100%" height="1000" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html"> -->
                     </div>
-                    <script type="text/javascript">
-                        // if (PDFObject.supportsPDFs) {
-                        //     console.log("Yay, this browser supports inline PDFs.");
-                        // } else {
-                        //     console.log("Boo, inline PDFs are not supported by this browser");
-                        // }
-                        var options = {
-                            pdfOpenParams: {
-                                view: 'FitV'
-                            }
-                        };
-                        window.onload = function() {
-                            PDFObject.embed("http://localhost:8080/views/test.pdf", "#pdf", options);
-                        }
-                        console.log(PDFObject.pdfobjectversion);
-                    </script>
+
                 </el-main>
                 <el-aside width="300px" style="background-color: rgb(238, 241, 246)">
                     <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
@@ -76,7 +66,8 @@
                             <template slot="title"><i class="el-icon-s-data"></i>第1页</template>
                             <el-menu-item-group>
                                 <template slot="title">分组一</template>
-                                <el-menu-item index="1-1">选项1</el-menu-item>
+                                <el-menu-item index="1-1" id="1-1">选项1</el-menu-item>
+
                                 <el-menu-item index="1-2">选项2</el-menu-item>
                             </el-menu-item-group>
                             <el-menu-item-group title="分组2">
@@ -126,21 +117,46 @@
     </div>
 </body>
 
-<!-- import Vue before Element -->
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
-<!-- import JavaScript -->
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script src="js/pdfobject.js"></script>
+
+<script>
+    get_pdf("http://localhost:8080/views/test.pdf", "pdf", "test");
+</script>
+
+<script>
+    $(document).ready(function() {
+        $("#1-1").click(function() {
+            // alert("click");
+            get_pdf("http://localhost:8080/views/test.pdf", "pdf", "test", 3);
+        });
+    });
+</script>
+
+
+
+
 
 <script>
     new Vue({
         el: '#app',
-        data: function() {
+        data() {
             return {
-                visible: false
+                activeIndex: '1',
+                activeIndex2: '1'
+            };
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
             }
         }
     })
 </script>
+
 
 </html>

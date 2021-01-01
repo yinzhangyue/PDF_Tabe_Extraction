@@ -12,17 +12,18 @@
     </div>
     <!-- <script type="text/javascript" src="pdfobject.js"></script> -->
     <script type="text/javascript">
-        // if (PDFObject.supportsPDFs) {
-        //     console.log("Yay, this browser supports inline PDFs.");
-        // } else {
-        //     console.log("Boo, inline PDFs are not supported by this browser");
-        // }
+
         var options = {
             pdfOpenParams: {
                 view: 'FitV'
             }
         };
-        window.onload = function() {
+        window.onload = function () {
+            if (PDFObject.supportsPDFs) {
+                console.log("Yay, this browser supports inline PDFs.");
+            } else {
+                console.log("Boo, inline PDFs are not supported by this browser");
+            }
             PDFObject.embed("http://localhost:8080/views/test.pdf", "#pdf", options);
         }
         console.log(PDFObject.pdfobjectversion);

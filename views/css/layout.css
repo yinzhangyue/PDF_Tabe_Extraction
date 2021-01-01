@@ -5,6 +5,11 @@ body {
     margin: 0;
 }
 
+.pdfobject-container {
+    height: 30rem;
+    border: 1rem solid rgba(0, 0, 0, .1);
+}
+
 .outer {
     height: 100%;
     padding: 100px 0 0;
