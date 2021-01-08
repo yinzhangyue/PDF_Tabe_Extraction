@@ -113,7 +113,8 @@ def verticalBlockMerge(infoList):
     return res
 
 
-def loc2sxlsx(pdfpath, xlsxpath, xlsxname, num, png_width, png_height, table):
+def loc2sxlsx(pdfpath, xlsxpath, xlsxname, num, png_width, png_height, table,
+              image):
     '''
     pdfpath: pdf路径
     xlsxpath：保存xlsx的位置
@@ -122,7 +123,8 @@ def loc2sxlsx(pdfpath, xlsxpath, xlsxname, num, png_width, png_height, table):
     png_width：图片宽度
     png_height: 图片长度
     table：表格位置
-    
+    image: 图片
+
     return: None
     '''
     doc = fitz.open(pdfpath)
@@ -147,8 +149,10 @@ def loc2sxlsx(pdfpath, xlsxpath, xlsxname, num, png_width, png_height, table):
     given_list = []
     for cell in mergedCell:
         given_list.append(chunk2xlsx.dataInput(cell))
-    chunk2xlsx.transformStructureToTable(
-        chunk2xlsx.chunk2Structure(given_list), xlsxname, savePath=xlsxpath)
+    chunks = chunk2xlsx.chunk2Structure(given_list)
+    chunk2xlsx.transformStructureToTable(chunks, xlsxname, savePath=xlsxpath)
+    newImage = chunk2xlsx.generatePNG(image, chunks, table)
+    return newImage, chunks
 
 
 def find_table(location, table_width=1616 / 2):
@@ -178,7 +182,8 @@ def find_table(location, table_width=1616 / 2):
     return table_loc
 
 
-def solve(filepath, image_path, xlsxpath, pdfpath, png_width, png_height):
+def solve(filepath, image_path, xlsxpath, chunkspath, pdfpath, png_width,
+          png_height):
     ############ To Do ############
     # image_path = './Examples/demo.png'
     # xmlPath = './Examples/'
@@ -189,6 +194,7 @@ def solve(filepath, image_path, xlsxpath, pdfpath, png_width, png_height):
     image_path = filepath + image_path
     xlsxpath = filepath + xlsxpath
     pdfpath = filepath + pdfpath
+    chunkspath = filepath + chunkspath
     ##############################
 
     model = init_detector(config_fname, checkpoint_path + epoch)
@@ -206,16 +212,18 @@ def solve(filepath, image_path, xlsxpath, pdfpath, png_width, png_height):
         img = cv2.imread(i)
         xlsxnames = []
         for ind, (x1, y1, x2, y2) in enumerate(table_loc):
-            img = cv2.rectangle(img, (x1, y1), (x2, y2), (200, 200, 169), 2)
+            img = cv2.rectangle(img, (x1, y1), (x2, y2), (222,156,83), 2)
             xlsxname = i_name + chr(ord('a') + ind)
-            loc2sxlsx(pdfpath=pdfpath,
-                      xlsxpath=xlsxpath,
-                      xlsxname=xlsxname,
-                      num=int(i_name) - 1,
-                      png_width=png_width,
-                      png_height=png_height,
-                      table=[x1, y1, x2, y2])
+            img, chunks = loc2sxlsx(pdfpath=pdfpath,
+                                    xlsxpath=xlsxpath,
+                                    xlsxname=xlsxname,
+                                    num=int(i_name) - 1,
+                                    png_width=png_width,
+                                    png_height=png_height,
+                                    table=[x1, y1, x2, y2],
+                                    image=img)
             xlsxnames.append(xlsxname)
+            chunk2xlsx.saveChunks(chunks, chunkspath, xlsxname)
         cv2.imwrite(i, img)
         info[index] = xlsxnames
     return info
@@ -239,7 +247,7 @@ if __name__ == "__main__":
     filename = sys.argv[1]
     os.mkdir('./' + filename + '/img')
     os.mkdir('./' + filename + '/xlsx')
-
+    os.mkdir('./' + filename + '/chunks')
     width, height = pdf2png('./' + filename,
                             filename + '.pdf',
                             True,
@@ -249,6 +257,7 @@ if __name__ == "__main__":
     info = solve(filepath='./' + filename,
                  image_path='/img/*.png',
                  xlsxpath='/xlsx/',
+                 chunkspath='/chunks/',
                  pdfpath='/' + filename + '.pdf',
                  png_width=width,
                  png_height=height)
