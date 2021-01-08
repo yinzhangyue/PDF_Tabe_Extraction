@@ -20,51 +20,6 @@ def pdf2png(filepath, filename, save=False, savepath=None):
     savepath: 保存路径
     
     return: 
-    img_cvs：list 包含pdf转换后每张图片的矩阵形式
-    img_names：list 包含每张图片的名称
-    '''
-    doc = fitz.open(filepath + '/' + filename)
-    img_cvs = []
-    img_names = []
-    for pg in range(doc.pageCount):
-        page = doc[pg]
-        rotate = int(0)
-        # 每个尺寸的缩放系数为2，这将为我们生成分辨率提高4倍的图像。
-        zoom_x = 2.0
-        zoom_y = 2.0
-        trans = fitz.Matrix(zoom_x, zoom_y).preRotate(rotate)
-        pm = page.getPixmap(matrix=trans, alpha=False)
-        # print(pm)
-
-        getpngdata = pm.getImageData(output="png")
-
-        # 解码为 np.uint8
-        image_array = np.frombuffer(getpngdata, dtype=np.uint8)
-        img_cv = cv2.imdecode(image_array, cv2.IMREAD_ANYCOLOR)
-
-        # 显示图片
-        # cv2.imshow("Image", cv2.resize(img_cv, (540, 800)))
-        # cv2.waitKey(0)
-
-        img_cv = cv2.resize(img_cv, (1654, 2339))
-        img_cvs.append(img_cv)
-        if save is True:
-            assert savepath is not None, 'savepath is empty'
-            # pm.writePNG(savepath + '/%s.png' % pg)
-            cv2.imwrite(savepath + '/%s.png' % pg, img_cv)
-            img_names.append('%s.png' % pg)
-            print('%s.png' % pg)
-    return img_cvs, img_names
-
-
-def pdf2png2(filepath, filename, save=False, savepath=None):
-    '''
-    filepath: 文件路径
-    filename: 文件名称
-    save：是否保存
-    savepath: 保存路径
-    
-    return: 
     pm.width：图片宽度
     pm.height：图片长度
     '''
@@ -196,8 +151,34 @@ def loc2sxlsx(pdfpath, xlsxpath, xlsxname, num, png_width, png_height, table):
         chunk2xlsx.chunk2Structure(given_list), xlsxname, savePath=xlsxpath)
 
 
-def solve(filepath, image_path, outPath, xlsxpath, pdfpath, png_width,
-          png_height):
+def find_table(location, table_width=1616 / 2):
+    table_loc_tmp = []
+    for ind, loc in enumerate(location):
+        if loc[4] > 0.85:
+            if loc[2] - loc[0] >= table_width:
+                table_loc_tmp.append([loc[0], loc[1], loc[2], loc[3]])
+
+    table_loc = []
+    for (x1, y1, x2, y2) in table_loc_tmp:
+        for ind, loc in enumerate(location):
+            if loc[4] > 0.85:
+                if x1 <= loc[0] and y1 <= loc[1] and x2 >= loc[
+                        2] and y2 >= loc[3]:
+                    continue
+                if x1 > loc[0] and y1 <= loc[1] and x2 >= loc[2] and y2 >= loc[
+                        3]:
+                    x1 = loc[0]
+                if x1 <= loc[0] and y1 <= loc[1] and x2 < loc[2] and y2 >= loc[
+                        3]:
+                    x2 = loc[2]
+        y1 -= 3
+        y2 += 3
+        table_loc.append((int(x1), int(y1), int(x2), int(y2)))
+    # print(table_loc)
+    return table_loc
+
+
+def solve(filepath, image_path, xlsxpath, pdfpath, png_width, png_height):
     ############ To Do ############
     # image_path = './Examples/demo.png'
     # xmlPath = './Examples/'
@@ -206,62 +187,71 @@ def solve(filepath, image_path, outPath, xlsxpath, pdfpath, png_width,
     checkpoint_path = "./"
     epoch = 'epoch_36.pth'
     image_path = filepath + image_path
-    outPath = filepath + outPath
     xlsxpath = filepath + xlsxpath
     pdfpath = filepath + pdfpath
     ##############################
 
-    model = init_detector(config_fname,
-                          checkpoint_path + epoch)
+    model = init_detector(config_fname, checkpoint_path + epoch)
 
     # List of images in the image_path
     imgs = glob.glob(image_path)
-    info = ""
-    for i in imgs:
+    info = {}
+    for index, i in enumerate(imgs):
         i_name = i.split('/')[-1][:-4]
-        info += "Page" + i_name + "\n"
         print('###{}###'.format(i_name))
         result = inference_detector(model, i)
-        img = cv2.imread(i)
-        x1s,y1s,x2s,y2s = [],[],[],[]
-        for res in result[0]:
-            x1s.append(res[0])
-            y1s.append(res[1])
-            x2s.append(res[2])
-            y2s.append(res[3])
-        # print(x1s)
-        x1 = min(x1s)
-        y1 = min(y1s)
-        x2 = max(x2s)
-        y2 = max(y2s)
-        img = cv2.rectangle(img, (x1, y1), (x2, y2), (200,200,169), 2)
-        cv2.imwrite(i,img)
+        # print(result)
 
-        loc2sxlsx(pdfpath=pdfpath,
-            xlsxpath=xlsxpath,
-            xlsxname=i_name,
-            num=int(i.split('/')[-1][:-4]) - 1,
-            png_width=png_width,
-            png_height=png_height,
-            table=[x1,y1,x2,y2])
+        table_loc = find_table(result[0])
+        img = cv2.imread(i)
+        xlsxnames = []
+        for ind, (x1, y1, x2, y2) in enumerate(table_loc):
+            img = cv2.rectangle(img, (x1, y1), (x2, y2), (200, 200, 169), 2)
+            xlsxname = i_name + chr(ord('a') + ind)
+            loc2sxlsx(pdfpath=pdfpath,
+                      xlsxpath=xlsxpath,
+                      xlsxname=xlsxname,
+                      num=int(i_name) - 1,
+                      png_width=png_width,
+                      png_height=png_height,
+                      table=[x1, y1, x2, y2])
+            xlsxnames.append(xlsxname)
+        cv2.imwrite(i, img)
+        info[index] = xlsxnames
+    return info
+
+
+def png2pdf(image_path, output_path):
+    doc = fitz.open()
+    for img in sorted(glob.glob(image_path)):  # 读取图片，确保按文件名排序
+        # print(img)
+        imgdoc = fitz.open(img)  # 打开图片
+        pdfbytes = imgdoc.convertToPDF()  # 使用图片创建单页的 PDF
+        imgpdf = fitz.open("pdf", pdfbytes)
+        doc.insertPDF(imgpdf)  # 将当前页插入文档
+    if os.path.exists(output_path):
+        os.remove(output_path)
+    doc.save(output_path)  # 保存pdf文件
+    doc.close()
 
 
 if __name__ == "__main__":
     filename = sys.argv[1]
     os.mkdir('./' + filename + '/img')
-    os.mkdir('./' + filename + '/output')
     os.mkdir('./' + filename + '/xlsx')
 
-    width, height = pdf2png2('./' + filename,
-                             filename + '.pdf',
-                             True,
-                             savepath='./' + filename + '/img')
+    width, height = pdf2png('./' + filename,
+                            filename + '.pdf',
+                            True,
+                            savepath='./' + filename + '/img')
     print("IMG Done.")
     # width, height = 1191, 1616
-    solve(filepath='./' + filename,
-          image_path='/img/*.png',
-          outPath='/output/',
-          xlsxpath='/xlsx/',
-          pdfpath='/' + filename + '.pdf',
-          png_width=width,
-          png_height=height)
+    info = solve(filepath='./' + filename,
+                 image_path='/img/*.png',
+                 xlsxpath='/xlsx/',
+                 pdfpath='/' + filename + '.pdf',
+                 png_width=width,
+                 png_height=height)
+    print(info)
+    png2pdf(image_path='./' + filename + '/img/*.png',
+            output_path='./' + filename + '/' + filename + '_.pdf')
