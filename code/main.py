@@ -9,6 +9,7 @@ import lxml.etree as etree
 import glob
 import sys
 import os
+import re
 import chunk2xlsx
 
 
@@ -231,7 +232,8 @@ def solve(filepath, image_path, xlsxpath, chunkspath, pdfpath, png_width,
 
 def png2pdf(image_path, output_path):
     doc = fitz.open()
-    for img in sorted(glob.glob(image_path)):  # 读取图片，确保按文件名排序
+    
+    for img in sorted(glob.glob(image_path), key=lambda x: int(re.findall("[0-9]+", x)[0])):  # 读取图片，确保按文件名排序
         # print(img)
         imgdoc = fitz.open(img)  # 打开图片
         pdfbytes = imgdoc.convertToPDF()  # 使用图片创建单页的 PDF
@@ -245,16 +247,16 @@ def png2pdf(image_path, output_path):
 
 if __name__ == "__main__":
     filename = sys.argv[1]
-    os.mkdir('./' + filename + '/img')
-    os.mkdir('./' + filename + '/xlsx')
-    os.mkdir('./' + filename + '/chunks')
-    width, height = pdf2png('./' + filename,
+    os.mkdir('./Files/' + filename + '/img')
+    os.mkdir('./Files/' + filename + '/xlsx')
+    os.mkdir('./Files/' + filename + '/chunks')
+    width, height = pdf2png('./Files/' + filename,
                             filename + '.pdf',
                             True,
-                            savepath='./' + filename + '/img')
+                            savepath='./Files/' + filename + '/img')
     print("IMG Done.")
     # width, height = 1191, 1616
-    info = solve(filepath='./' + filename,
+    info = solve(filepath='./Files/' + filename,
                  image_path='/img/*.png',
                  xlsxpath='/xlsx/',
                  chunkspath='/chunks/',
@@ -262,5 +264,5 @@ if __name__ == "__main__":
                  png_width=width,
                  png_height=height)
     print(info)
-    png2pdf(image_path='./' + filename + '/img/*.png',
-            output_path='./' + filename + '/' + filename + '_.pdf')
+    png2pdf(image_path='./Files/' + filename + '/img/*.png',
+            output_path='./Files/' + filename + '/' + filename + '_.pdf')
