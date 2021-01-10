@@ -11,8 +11,10 @@
         "express": "^4.17.1",
         "express-generator": "^4.16.1",
         "jquery": "^3.5.1",
+        "multiparty": "^4.2.2",
         "path": "^0.12.7",
         "pdfobject": "^2.2.4",
+        "request": "^2.88.2",
         "serve": "^11.3.2",
         "uglify-es": "^3.3.9"
     }

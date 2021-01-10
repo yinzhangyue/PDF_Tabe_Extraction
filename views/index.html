@@ -37,6 +37,8 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script src="js/my_jquery_functions.js"></script>
 </head>
 
 <body>
@@ -54,15 +56,15 @@
                             <i class="el-icon-collection" size="200%"></i>
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
 
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ml-auto">
                                 <li class="nav-item">
                                     <a class="nav-link" href="index.html">Home
-                                    <span class="sr-only">(current)</span>
-                                </a>
+                                        <span class="sr-only">(current)</span>
+                                    </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="about.html">About</a>
@@ -72,8 +74,8 @@
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Pages
-                                </a>
+                                        Pages
+                                    </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="404.html">404 Page</a>
                                         <a class="dropdown-item" href="gallery.html">Gallery</a>
@@ -82,8 +84,8 @@
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Blog
-                                </a>
+                                        Blog
+                                    </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="blog-fullwidth.html">Blog Full</a>
                                         <a class="dropdown-item" href="blog-left-sidebar.html">Blog Left sidebar</a>
@@ -116,10 +118,10 @@ Slider Section Start
                             <h1 class="wow fadeInUp animated cd-headline slide" data-wow-delay=".4s">
                                 <span>HI, MY NAME IS JONATHON &amp; I AM A</span><br>
                                 <span class="cd-words-wrapper">
-                        <b class="is-visible">DESIGNER</b>
-                        <b>DEVELOPER</b>
-                        <b>FATHER</b>
-                    </span>
+                                    <b class="is-visible">DESIGNER</b>
+                                    <b>DEVELOPER</b>
+                                    <b>FATHER</b>
+                                </span>
                             </h1>
                         </section>
                         <!-- cd-intro -->
@@ -127,7 +129,34 @@ Slider Section Start
                         <h2 class="wow fadeInUp animated" data-wow-delay=".6s">
                             With 10 years experience, I've occupied many roles including digital design director,<br> web designer and developer. This site showcases some of my work.
                         </h2>
-                        <a class="btn-lines dark light wow fadeInUp animated btn btn-default btn-green hvr-bounce-to-right" data-wow-delay=".9s" href="browsePDF.html" target="_blank">Have a Try</a>
+
+                        <input type="file" id="btn_file" style="display:none">
+                        <button class="btn-lines dark light wow fadeInUp animated btn btn-default btn-green hvr-bounce-to-right" type="button" data-wow-delay=".9s" onclick="F_Open_dialog()" target="_blank">Have a
+                            Try</button>
+                        <!-- //TODO:传文件给服务层 -->
+                        <script>
+                            function F_Open_dialog() {
+                                var file = document.getElementById("btn_file").click();
+                                var formData = new FormData(file);
+                                console.log("@@@" + formData);
+                                $("#btn_file").on("change", function() {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '/upload',
+                                        data: formData,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false
+                                    }).success(function(data) {
+                                        alert(data);
+                                    }).error(function(error) {
+                                        alert("上传失败！");
+                                        console.log(error);
+                                    });
+                                });
+                            }
+                        </script>
+
                     </div>
                 </div>
             </div>
@@ -194,8 +223,8 @@ Portfolio Section Start
                         <figcaption>
                             <h4>
                                 <a href="#">
-                        Dew Drop
-                    </a>
+                                    Dew Drop
+                                </a>
                             </h4>
                             <p>
                                 Redesigne UI Concept
@@ -217,8 +246,8 @@ Portfolio Section Start
                         <figcaption>
                             <h4>
                                 <a href="#">
-                        Bottle Mockup
-                    </a>
+                                    Bottle Mockup
+                                </a>
                             </h4>
                             <p>
                                 Lorem ipsum dolor sit.
@@ -240,8 +269,8 @@ Portfolio Section Start
                         <figcaption>
                             <h4>
                                 <a href="#">
-                        Table Design
-                    </a>
+                                    Table Design
+                                </a>
                             </h4>
                             <p>
                                 Lorem ipsum dolor sit amet.
@@ -263,8 +292,8 @@ Portfolio Section Start
                         <figcaption>
                             <h4>
                                 <a href="#">
-                        Make Up elements
-                    </a>
+                                    Make Up elements
+                                </a>
                             </h4>
                             <p>
                                 Lorem ipsum dolor.
@@ -286,8 +315,8 @@ Portfolio Section Start
                         <figcaption>
                             <h4>
                                 <a href="#">
-                        Shoping Bag Concept
-                    </a>
+                                    Shoping Bag Concept
+                                </a>
                             </h4>
                             <p>
                                 Lorem ipsum dolor.
@@ -309,8 +338,8 @@ Portfolio Section Start
                         <figcaption>
                             <h4>
                                 <a href="#">
-                        Caramel Bottle
-                    </a>
+                                    Caramel Bottle
+                                </a>
                             </h4>
                             <p>
                                 Lorem ipsum dolor.
