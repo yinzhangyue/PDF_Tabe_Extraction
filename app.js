@@ -35,113 +35,58 @@ app.use(function(req, res, next) {
 });
 app.use(express.static(__dirname + '/views'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-
-
-
-
-////////////////////////////////////////////////Request///////////////////////////////////////////////////
-/////////////////////////////////////////////////params///////////////////////////////////////////////////
-
-
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 //////////////////////////////////////////////////rout////////////////////////////////////////////////////
 //服务器主页输出
 app.get('/', function(req, res) {
-    console.log(req.body);
-    // Request.title = req.query.title;
-    // Request.kw = req.query.kw;
-    // Request.content = req.query.content;
-    // console.log(Request.title);
-    // console.log(Request.kw);
-    // console.log(Request.content);
-    // if (Request.title == undefined) {
-    //     res.render('home');
-    // } else if (Request.title == undefined) {
-    //     res.render('home');
-    // } else {
-    //     res.redirect('/news?title=' + Request.title + '&kw=' + Request.kw + '&content=' + Request.content);
-    // }
-    // res.render('browsePDF');
     res.render('index.html', { title: 'HTML' });
+    if (!req) {
+        res.render('index.html', { title: 'HTML' });
+    } else if (Info == undefined) {
+        console.log('####################### go to loading');
+        res.render('loading.html', { title: 'HTML' });
+    } else {
+        res.redirect('/pdf');
+    }
     // res.redirect('/news');
     // res.send(req.body);
 });
 
 
-async function upload(pdfPATH, pdfName) {
-    return new Promise(function(resolve, reject) {
-
-        var Info = {
-            name: '',
-            pages: undefined,
-            pageNum: undefined,
-            dist: undefined,
-            pdfURL: undefined,
-            status: undefined,
-            message: ''
-        }
-
-        try {
-            var uploadURL = "http://" + SERVER + ":5000/pdf/upload";
-            var options = {
-                formData: {
-                    "file": fs.createReadStream(pdfPATH)
-                }
-            };
-            request.post(uploadURL, options, function(err, res, body) {
-                var result = JSON.parse(body);
-                if (!err && result.status == 1) {
-                    console.log(result);
-                    resolve(result);
-                } else {
-                    console.log(err);
-                    return;
-                }
-            });
-
-        } catch (error) {
-            console.log(error.response.body);
-        }
-        //从后端传回的Info中解析数据
-        Info.name = pdfName;
-        Info.dist = JSON.parse(result.info);
-        Info.pages = Object.keys(Info.dist);
-        Info.pageNum = Info.pages.length;
-        Info.status = result.status;
-        Info.message = result.message;
-
-        var storeDict = path.basename(pdfPATH, '.pdf');
-        // console.log(storeDict);
-        Info.pdfURL = "http://" + SERVER + ":8080/" + storeDict + "/" + storeDict + "_.pdf";
-
-        console.log(Info);
-        return Info;
-    });
-    //生成pdf文件编号
-    //传输到服务端
-    //await get_data()后端数据的返回
-    //最后return chunk
-
-}
-
-app.post('/upload', function(req, res) {
+app.post('/upload', async function(req, res) {
     console.log("===========================收到一个上传请求===========================");
+
+    var name = undefined,
+        filePath = undefined,
+        Info = undefined;
+
     let form = new multiparty.Form();
-    form.parse(req, function(err, fields, files) {
+    form.parse(req, async function(err, fields, files) {
         console.log(files);
         // console.log("$$$" + typeof files);
-        var filePath = files.file[0].path;
-        var name = files.file[0].originalFilename;
+        filePath = files.file[0].path;
+        name = files.file[0].originalFilename;
 
         // console.log(filePath);
-        var Info = await upload(filePath, name);
+        Info = await upload(filePath, name);
+        res.send(Info);
     });
+
+
 });
 
-app.get('/pdf', function(req, res) {
+app.get('/loading', function(req, res) {
+    res.render('loading.html', { title: 'HTML' });
+});
+
+app.get('/pdf*', function(req, res) {
     res.render('browsePDF.html', { title: 'HTML' });
+    // console.log(typeof req.Info);
+    // var Info = JSON.parse(req.Info);
+    // console.log("**************", Info);
+
 });
 
 
@@ -158,6 +103,7 @@ app.get('/try', function(req, res) {
 app.use(function(req, res) {
     res.type('text/plain');
     res.status(404);
+    // res.render('404.html', { title: 'HTML' });
     res.send('404 - Not Found');
 });
 app.use(function(err, req, res, next) {
@@ -181,3 +127,58 @@ var server = app.listen(app.get('port'), "127.0.0.1", function() { //指跑在�
     console.log("访问地址为 http://%s:%s", host, port)
 
 })
+
+
+
+async function upload(pdfPATH, pdfName) {
+    return new Promise(function(resolve, reject) {
+
+        var Info = {
+            name: '',
+            pages: undefined,
+            pageNum: undefined,
+            dist: undefined,
+            pdfURL: undefined,
+            status: undefined,
+            message: ''
+        }
+        var result;
+        try {
+            var uploadURL = "http://" + SERVER + ":5000/pdf/upload";
+            var options = {
+                formData: {
+                    "file": fs.createReadStream(pdfPATH)
+                }
+            };
+            request.post(uploadURL, options, function(err, res, body) {
+                result = JSON.parse(body);
+                if (!err && result.status == 1) {
+                    console.log(result);
+                    // resolve(result);
+                    //从后端传回的Info中解析数据
+                    Info.name = pdfName;
+                    Info.dist = JSON.parse(result.info);
+                    Info.pages = Object.keys(Info.dist);
+                    Info.pageNum = Info.pages.length;
+                    Info.status = result.status;
+                    Info.message = result.message;
+
+                    var storeDict = path.basename(pdfPATH, '.pdf');
+                    // console.log(storeDict);
+                    Info.pdfURL = 'http://' + SERVER + ':8080/' + storeDict + '/' + storeDict + '_.pdf';
+
+                    console.log(Info);
+                    resolve(Info);
+                } else {
+                    console.log(err);
+                    return;
+                }
+            });
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    });
+
+}

@@ -35,8 +35,10 @@
     <link rel="stylesheet" href="plugins/hover/hover-min.css">
     <!-- template main css file -->
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
+    <!-- <script src="https://unpkg.com/element-ui/lib/index.js"></script> -->
+    <script src="js/vue.js"></script>
+    <script src="js/element-index.js"></script>
     <script type="text/javascript" src="js/jquery.js"></script>
     <script src="js/my_jquery_functions.js"></script>
 </head>
@@ -152,23 +154,21 @@ Slider Section Start
                                     type: "post",
                                     data: formData,
                                     // contentType: "application/x-www-form-urlencoded; charset=utf-8",
-                                    async: false,
+                                    async: true,
                                     cache: false,
                                     contentType: false,
                                     processData: false,
                                     success: function(data) {
-                                        // if (data.state == "1") {
-                                        console.log(data);
-                                        // var html = "<img onclick='big(id)' id=img" + data.id + " src='" + data.fileAddress + "' width='200' height='200'>";
-                                        // $("#text").val(html);
-                                        //此处模拟点击发送，实现选择图片之后直接发送，如果不想直接发送把下面一行注上即可
-                                        // $("#submit").trigger("click");
-                                        // } else if (data.state == "2") {
-                                        // console.log(data.msg)
-                                        // } else if (data.state == "3") {
-                                        // console.log(data.msg)
-                                        // }
-                                    }
+                                        console.log(JSON.stringify(data));
+                                        var jump = JSON.stringify(data);
+                                        window.location.href = '/pdf?Info=' + jump;
+                                    }, //TODO:
+                                    // error: function() {
+                                    //     shutdown();
+                                    // },
+                                    // beforeSend: function() {
+                                    //     Loading();
+                                    // }
                                 });
                             }
                             // function F_Open_dialog() {
