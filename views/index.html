@@ -129,7 +129,7 @@ Slider Section Start
                         <h2 class="wow fadeInUp animated" data-wow-delay=".6s">
                             With 10 years experience, I've occupied many roles including digital design director,<br> web designer and developer. This site showcases some of my work.
                         </h2>
-                        <button type="button" id="uploadBtn" onclick="F_Open_dialog()" class="btn-lines dark light wow fadeInUp animated btn btn-default btn-green hvr-bounce-to-right" data-wow-delay=".9s" target="_blank">Have a
+                        <button type="button" id="uploadBtn" class="btn-lines dark light wow fadeInUp animated btn btn-default btn-green hvr-bounce-to-right" data-wow-delay=".9s" target="_blank">Have a
                             Try</button>
                         <form id="uploadForm" enctype="multipart/form-data">
                             <input type="file" id="file" name="file" multiple="multiple" onchange="handlefiles(this.files)" style="display:none">
@@ -146,35 +146,31 @@ Slider Section Start
                             }, false);
 
                             function handlefiles() {
-                                var formData = new FormData($("#myForm")[0]);
+                                var formData = new FormData($("#uploadForm")[0]);
                                 $.ajax({
                                     url: "/upload",
                                     type: "post",
                                     data: formData,
-                                    contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                                    // contentType: "application/x-www-form-urlencoded; charset=utf-8",
                                     async: false,
                                     cache: false,
                                     contentType: false,
                                     processData: false,
                                     success: function(data) {
-                                        if (data.state == "1") {
-                                            console.log(data.msg)
-                                            var html = "<img onclick='big(id)' id=img" + data.id + " src='" + data.fileAddress + "' width='200' height='200'>";
-                                            $("#text").val(html);
-                                            //此处模拟点击发送，实现选择图片之后直接发送，如果不想直接发送把下面一行注上即可
-                                            $("#submit").trigger("click");
-                                        } else if (data.state == "2") {
-                                            console.log(data.msg)
-                                        } else if (data.state == "3") {
-                                            console.log(data.msg)
-                                        }
+                                        // if (data.state == "1") {
+                                        console.log(data);
+                                        // var html = "<img onclick='big(id)' id=img" + data.id + " src='" + data.fileAddress + "' width='200' height='200'>";
+                                        // $("#text").val(html);
+                                        //此处模拟点击发送，实现选择图片之后直接发送，如果不想直接发送把下面一行注上即可
+                                        // $("#submit").trigger("click");
+                                        // } else if (data.state == "2") {
+                                        // console.log(data.msg)
+                                        // } else if (data.state == "3") {
+                                        // console.log(data.msg)
+                                        // }
                                     }
                                 });
                             }
-
-
-
-
                             // function F_Open_dialog() {
                             //     var file = document.getElementById("file").click();
                             //     // var filePDF = file.files[0];

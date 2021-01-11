@@ -73,7 +73,7 @@ app.get('/', function(req, res) {
 });
 
 
-function upload(file) {
+function upload(pdfPATH) {
     //生成pdf文件编号
     //传输到服务端
     //await get_data()后端数据的返回
@@ -81,38 +81,22 @@ function upload(file) {
     request.post("http://113.31.124.254:5000/pdf/upload", {
         formData: {
             // "name": "testPDF-cvpr2015",
-            // "file": fs.createReadStream(pdfPATH = "D:/test2.pdf")
-            "file": file
+            "file": fs.createReadStream(pdfPATH)
         }
     }, function(err, res, body) {
-        // if (err) {
-        //     console.log("ERROR! " + err);
-        // } else {
         console.log(res);
-        // return res;
-        // }
     });
 }
 
 app.post('/upload', function(req, res) {
-    // var form = new formidable.IncomingForm();
-    // form.uploadDir = __dirname + "/tempUpload";
     let form = new multiparty.Form();
     form.parse(req, function(err, fields, files) {
-        // if (err) {
-        // send_json = {
-        //     exception: "解析失败",
-        //     err: false
-        // };
-        // resolve(send_json);
-        // console.log(err);
-        // return send_json;
-        // } else {
         console.log(files);
         console.log("$$$" + typeof files);
-        // upload(files[0]);
-        // console.log(result);
-        // }
+        var filePath = files.file[0].path;
+        //TODO: 临时路径的pdf文件重命名
+        console.log(filePath);
+        upload(filePath);
     });
     console.log("收到一个上传请求");
 });
