@@ -12,6 +12,7 @@ var bodyParser = require('body-parser');
 var ejs = require('ejs');
 var express = require('express');
 var multiparty = require('multiparty');
+var formidable = require("formidable");
 var app = express();
 
 
@@ -32,7 +33,7 @@ app.use(function(req, res, next) {
 });
 app.use(express.static(__dirname + '/views'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 
 
@@ -80,29 +81,40 @@ function upload(file) {
     request.post("http://113.31.124.254:5000/pdf/upload", {
         formData: {
             // "name": "testPDF-cvpr2015",
-            // "file": fs.createReadStream(pdfPATH = "D:/cvpr2015.pdf")
+            // "file": fs.createReadStream(pdfPATH = "D:/test2.pdf")
             "file": file
         }
     }, function(err, res, body) {
-        if (body) {
-            console.log(body);
-        }
-        if (err) {
-            console.log("ERROR! " + err);
-        }
+        // if (err) {
+        //     console.log("ERROR! " + err);
+        // } else {
+        console.log(res);
+        // return res;
+        // }
     });
 }
+
 app.post('/upload', function(req, res) {
-    // var pdfFile = req.data;
-
+    // var form = new formidable.IncomingForm();
+    // form.uploadDir = __dirname + "/tempUpload";
     let form = new multiparty.Form();
-    form.parse(req, function(err, fields, file) {
-        console.log(file);
-        upload(file);
-    })
+    form.parse(req, function(err, fields, files) {
+        // if (err) {
+        // send_json = {
+        //     exception: "解析失败",
+        //     err: false
+        // };
+        // resolve(send_json);
+        // console.log(err);
+        // return send_json;
+        // } else {
+        console.log(files);
+        console.log("$$$" + typeof files);
+        // upload(files[0]);
+        // console.log(result);
+        // }
+    });
     console.log("收到一个上传请求");
-    res.send(true);
-
 });
 
 app.get('/pdf', function(req, res) {
