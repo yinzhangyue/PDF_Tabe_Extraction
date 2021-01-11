@@ -68,7 +68,48 @@
                         <el-submenu index="1" id="sideList">
                             <!-- <template slot="title"><i class="el-icon-s-data"></i>第1页</template>
                             <el-menu-item-group>
-                                <el-menu-item index="1-1" id="1-1" class="table">选项1</el-menu-item>
+                                <el-menu-item index="1-1" id="1-1" class="table">选项1
+                                    <div>
+                                        <table border='1'>
+                                            <tr>
+                                                <td>Groups</td>
+                                                <td>Foreign turnover (FFr bn.) </td>
+                                                <td>% of Total Turnover </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Carrefour</td>
+                                                <td>62.7</td>
+                                                <td>40.5%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Promodès</td>
+                                                <td>37.0</td>
+                                                <td>35.7%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Auchan</td>
+                                                <td>23.5</td>
+                                                <td>19.5%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Cora</td>
+                                                <td>11.0</td>
+                                                <td>24.0%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Casino</td>
+                                                <td>8.5</td>
+                                                <td>11.5%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Comptoirs Modernes </td>
+                                                <td>2.0</td>
+                                                <td>7.0%</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </el-menu-item>
+
                             </el-menu-item-group> -->
                         </el-submenu>
                     </el-menu>
@@ -92,18 +133,20 @@
 
         get_pdf(obj.pdfURL, "pdf", obj.name);
 
-        var page_html = "<template slot='title'><i class=\"el-icon-s-data\"></i>content</template>";
+        var page_html = "<template slot='title'><i class=\"el-icon-s-data\"></i> CONTENT </template>";
         var front_quot = "<el-menu-item-group>";
-        var item_html = "<el-menu-item index=\"1-1\" id=\"1-1\" class=\"table\">content</el-menu-item>";
+        var item_html = "<el-menu-item index=\"1-1\" id=\"1-1\" class=\"table\" page=\"PAGENUM\" link=\"PDFLINK\"><el-col :span=\"21\"> CONTENT </el-col> <el-col :span=\"2\"> <el-button type=\"warning\" id=\"Download-Btn-id\" name=\"NAME\" size=\"mini\">下载</el-button></el-col></el-menu-item>";
         var back_quot = "</el-menu-item-group>";
         for (var i = 0; i < obj.pageNum; i++) {
             var table_names = obj.dist[i];
             //TODO: 加一页
-            $("#sideList").append(page_html.replace("content", "第" + i + "页"));
+            var k = i + 1;
+            $("#sideList").append(page_html.replace("CONTENT", "第 " + k + " 页"));
             $("#sideList").append(front_quot);
             for (var j = 0; j < table_names.length; j++) {
                 //TODO: 加一项
-                $("#sideList").append(item_html.replace("content", "表" + table_names[j]));
+                $("#sideList").append(item_html.replace("CONTENT", "表 " + table_names[j]).replace("NAME", obj.saveName + "/" + table_names[j]).replace("PAGENUM", k).replace("PDFLINK", obj.pdfURL));
+
             }
             $("#sideList").append(back_quot);
         }
@@ -120,10 +163,18 @@
 <script>
     $(document).ready(function() {
         $(".table").click(function() {
-            // alert("click");
-            // $("#1-1").load();
-            jump_pdf("http://localhost:8080/views/test.pdf", "pdf", "test", 3);
+            var pagenum = parseInt($(this).attr("page"));
+            console.log(typeof pagenum);
+            jump_pdf($(this).attr("link"), "pdf", "test", pagenum);
         });
+
+        var SERVER = "106.75.237.104";
+        $("#Download-Btn-id").click(function() {
+            var request_url = "http://" + SERVER + ":5000/pdf/downloadXLSX/" + $(this).attr("name");
+            var httpRequest = new XMLHttpRequest();
+            httpRequest.open('GET', request_url, true);
+            httpRequest.send();
+        })
     });
 </script>
 

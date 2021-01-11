@@ -135,6 +135,7 @@ async function upload(pdfPATH, pdfName) {
 
         var Info = {
             name: '',
+            saveName: '',
             pages: undefined,
             pageNum: undefined,
             dist: undefined,
@@ -163,9 +164,8 @@ async function upload(pdfPATH, pdfName) {
                     Info.status = result.status;
                     Info.message = result.message;
 
-                    var storeDict = path.basename(pdfPATH, '.pdf');
-                    // console.log(storeDict);
-                    Info.pdfURL = 'http://' + SERVER + ':8080/' + storeDict + '/' + storeDict + '_.pdf';
+                    Info.saveName = path.basename(pdfPATH, '.pdf');
+                    Info.pdfURL = 'http://' + SERVER + ':8080/' + Info.saveName + '/' + Info.saveName + '_.pdf';
 
                     console.log(Info);
                     resolve(Info);
