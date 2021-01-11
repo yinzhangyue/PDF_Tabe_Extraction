@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////global Variable///////////////////////////////////////////
 var PORT = 3000;
-
+// var SERVER = "113.31.124.254";
+var SERVER = "106.75.237.104";
 
 ////////////////////////////////////////////////Dependency////////////////////////////////////////////////
 var path = require('path');
@@ -13,6 +14,7 @@ var ejs = require('ejs');
 var express = require('express');
 var multiparty = require('multiparty');
 var formidable = require("formidable");
+const { type } = require('jquery');
 var app = express();
 
 
@@ -40,11 +42,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 ////////////////////////////////////////////////Request///////////////////////////////////////////////////
 /////////////////////////////////////////////////params///////////////////////////////////////////////////
-var Request = {
-    title: '',
-    kw: '',
-    content: ''
-}
 
 
 
@@ -73,32 +70,74 @@ app.get('/', function(req, res) {
 });
 
 
-function upload(pdfPATH) {
+async function upload(pdfPATH, pdfName) {
+    return new Promise(function(resolve, reject) {
+
+        var Info = {
+            name: '',
+            pages: undefined,
+            pageNum: undefined,
+            dist: undefined,
+            pdfURL: undefined,
+            status: undefined,
+            message: ''
+        }
+
+        try {
+            var uploadURL = "http://" + SERVER + ":5000/pdf/upload";
+            var options = {
+                formData: {
+                    "file": fs.createReadStream(pdfPATH)
+                }
+            };
+            request.post(uploadURL, options, function(err, res, body) {
+                var result = JSON.parse(body);
+                if (!err && result.status == 1) {
+                    console.log(result);
+                    resolve(result);
+                } else {
+                    console.log(err);
+                    return;
+                }
+            });
+
+        } catch (error) {
+            console.log(error.response.body);
+        }
+        //从后端传回的Info中解析数据
+        Info.name = pdfName;
+        Info.dist = JSON.parse(result.info);
+        Info.pages = Object.keys(Info.dist);
+        Info.pageNum = Info.pages.length;
+        Info.status = result.status;
+        Info.message = result.message;
+
+        var storeDict = path.basename(pdfPATH, '.pdf');
+        // console.log(storeDict);
+        Info.pdfURL = "http://" + SERVER + ":8080/" + storeDict + "/" + storeDict + "_.pdf";
+
+        console.log(Info);
+        return Info;
+    });
     //生成pdf文件编号
     //传输到服务端
     //await get_data()后端数据的返回
     //最后return chunk
-    request.post("http://113.31.124.254:5000/pdf/upload", {
-        formData: {
-            // "name": "testPDF-cvpr2015",
-            "file": fs.createReadStream(pdfPATH)
-        }
-    }, function(err, res, body) {
-        console.log(res);
-    });
+
 }
 
 app.post('/upload', function(req, res) {
+    console.log("===========================收到一个上传请求===========================");
     let form = new multiparty.Form();
     form.parse(req, function(err, fields, files) {
         console.log(files);
-        console.log("$$$" + typeof files);
+        // console.log("$$$" + typeof files);
         var filePath = files.file[0].path;
-        //TODO: 临时路径的pdf文件重命名
-        console.log(filePath);
-        upload(filePath);
+        var name = files.file[0].originalFilename;
+
+        // console.log(filePath);
+        var Info = await upload(filePath, name);
     });
-    console.log("收到一个上传请求");
 });
 
 app.get('/pdf', function(req, res) {
