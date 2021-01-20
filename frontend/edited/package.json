@@ -1,0 +1,22 @@
+{
+    "name": "pdf-tool",
+    "description": "-",
+    "version": "0.0.1",
+    "private": true,
+    "main": "app.js",
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "element-theme-default": "^1.4.13",
+        "element-ui": "^2.14.1",
+        "express": "^4.17.1",
+        "express-generator": "^4.16.1",
+        "formidable": "^1.2.2",
+        "jquery": "^3.5.1",
+        "multiparty": "^4.2.2",
+        "path": "^0.12.7",
+        "pdfobject": "^2.2.4",
+        "request": "^2.88.2",
+        "serve": "^11.3.2",
+        "uglify-es": "^3.3.9"
+    }
+}

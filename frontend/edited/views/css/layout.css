@@ -1,0 +1,32 @@
+html,
+body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.pdfobject-container {
+    height: 30rem;
+    border: 1rem solid rgba(0, 0, 0, .1);
+}
+
+.outer {
+    height: 100%;
+    padding: 100px 0 0;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.A {
+    height: 100px;
+    background: #BBE8F2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.B {
+    height: 100%;
+    background: #D9C666;
+}

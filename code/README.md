@@ -1,4 +1,0 @@
-# PDF Table Detection
-
-现在深度学习模型大多在GPU上运行，难以在CPU端进行实时快速的计算，因此模型的压缩和在CPU端的迁移已经成为现如今热门的研究领域。MMdetection是基于GPU设计的，我们将MMdetection迁移到CPU上运行
-

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>文档标题</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- <link rel="stylesheet" href="css/element-index.css"> -->
+    <link rel="stylesheet" href="/css/layout.css">
+
+    <!-- import Vue before Element -->
+    <!-- <script src="https://unpkg.com/vue/dist/vue.js"></script> -->
+    <!-- import JavaScript -->
+    <!-- <script src="https://unpkg.com/element-ui/lib/index.js"></script> -->
+    <script src="js/vue.js"></script>
+    <script src="js/element-index.js"></script>
+    <script src="js/pdfobject.js"></script>
+    <script src="js/jquery.js" charset="UTF-8"></script>
+    <script src="js/my_jquery_functions.js"></script>
+    <script src="js/FileSaver.js"></script>
+    <!-- <script src="js/axios.min.js"></script> -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        //获取浏览器页面可见高度和宽度
+        var _PageHeight = document.documentElement.clientHeight,
+            _PageWidth = document.documentElement.clientWidth;
+        //计算loading框距离顶部和左部的距离（loading框的宽度为215px，高度为61px）
+        var _LoadingTop = _PageHeight > 61 ? (_PageHeight - 61) / 2 : 0,
+            _LoadingLeft = _PageWidth > 215 ? (_PageWidth - 215) / 2 : 0;
+        //在页面未加载完毕之前显示的loading Html自定义内容
+        var _LoadingHtml = '<div id="loadingDiv" style="position:absolute;left:0;width:100%;height:' + _PageHeight + 'px;top:0;background:#f3f8ff;opacity:1;filter:alpha(opacity=80);z-index:10000;"><div style="position: absolute; cursor1: wait; left: ' + _LoadingLeft + 'px; top:' + _LoadingTop + 'px; width: auto; height: 57px; line-height: 57px; padding-left: 50px; padding-right: 5px; background: #fff url(images/loading.gif) no-repeat scroll 5px 10px; border: 2px solid #95B8E7; color: #696969; font-family:\'Microsoft YaHei\';">页面加载中，请等待...</div></div>';
+        //呈现loading效果
+        document.write(_LoadingHtml);
+
+
+
+        //监听加载状态改变
+        document.onreadystatechange = completeLoading;
+
+        //加载状态为complete时移除loading效果
+        function completeLoading() {
+            if (document.readyState == "complete") {
+                var loadingMask = document.getElementById('loadingDiv');
+                loadingMask.parentNode.removeChild(loadingMask);
+            }
+        }
+
+    </script>
+
+    <style>
+        a {
+            color: #000000;
+            TEXT-DECORATION: none
+        }
+    </style>
+    <style type="text/css">
+        html,
+        body,
+        #app,
+        .el-container {
+            /*设置内部填充为0，几个布局元素之间没有间距*/
+            padding: 0px;
+            /*外部间距也是如此设置*/
+            margin: 0px;
+            /*统一设置高度为100%*/
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <el-container>
+            <el-header>
+                <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+                    <el-menu-item index="1">Home</el-menu-item>
+                    <el-submenu index="2">
+                        <template slot="title">我的工作台</template>
+                        <el-menu-item index="2-1">选项1</el-menu-item>
+                        <el-menu-item index="2-2">选项2</el-menu-item>
+                        <el-menu-item index="2-3">选项3</el-menu-item>
+                        <el-submenu index="2-4">
+                            <template slot="title">选项4</template>
+                            <el-menu-item index="2-4-1">选项1</el-menu-item>
+                            <el-menu-item index="2-4-2">选项2</el-menu-item>
+                            <el-menu-item index="2-4-3">选项3</el-menu-item>
+                        </el-submenu>
+                    </el-submenu>
+                    <el-menu-item index="3" disabled>消息中心</el-menu-item>
+                    <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
+                </el-menu>
+                <div class="line"></div>
+            </el-header>
+            <el-container>
+                <el-main>
+                    <div id="pdf" name="">
+                        <!-- <embed src="http://localhost:8080/views/test.pdf" class="pdfobject" width="100%" height="1000" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html"> -->
+                    </div>
+
+                </el-main>
+                <el-aside width="300px" style="background-color: rgb(238, 241, 246)">
+                    <el-main>
+                        <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen"
+                            @close="handleClose" background-color="#545c64" text-color="#fff"
+                            active-text-color="#ffd04b">
+                            <el-submenu index="1" id="sideList">
+                                <!-- <template slot="title"><i class="el-icon-s-data"></i>第1页</template>
+                            <el-menu-item-group>
+                                <el-menu-item index="1-1" id="1-1" class="table">选项1
+                                    <div>
+                                        <table border='1'>
+                                            <tr>
+                                                <td>Groups</td>
+                                                <td>Foreign turnover (FFr bn.) </td>
+                                                <td>% of Total Turnover </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Carrefour</td>
+                                                <td>62.7</td>
+                                                <td>40.5%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Promodès</td>
+                                                <td>37.0</td>
+                                                <td>35.7%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Auchan</td>
+                                                <td>23.5</td>
+                                                <td>19.5%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Cora</td>
+                                                <td>11.0</td>
+                                                <td>24.0%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Casino</td>
+                                                <td>8.5</td>
+                                                <td>11.5%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Comptoirs Modernes </td>
+                                                <td>2.0</td>
+                                                <td>7.0%</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </el-menu-item>
+
+                            </el-menu-item-group> -->
+                            </el-submenu>
+
+                        </el-menu>
+                    </el-main>
+                    <el-footer>
+                        <el-col :span="12" visible="false">
+                            <!-- <el-button type="Info" size="medium" font-family="Hiragino Sans GB" font-size="18px"
+                                font-color="black"><a id="Download-All-rar" href=""></a>
+                                批量下载(.rar)
+                            </el-button> -->
+                        </el-col>
+                        <el-col :span="12">
+                            <el-button type="warning" size="medium" font-family="Hiragino Sans GB" font-size="18px"
+                                font-color="black"><a id="Download-All-zip" href="">
+                                    批量下载(.zip)</a>
+                            </el-button>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-button type="Info"  size="medium" font-family="Hiragino Sans GB"
+                                font-size="18px" font-color="black"><a id="exit" href="">
+                                退  出  Exit   =></a>
+                            </el-button>
+                        </el-col>
+
+
+                    </el-footer>
+                </el-aside>
+
+                <!-- </el-container> -->
+            </el-container>
+        </el-container>
+    </div>
+</body>
+
+<script>
+    var url = decodeURI(window.location.href);
+
+    var SERVER = url.split('//')[1].split(':')[0];
+    // console.log(url, typeof url);
+
+    if (url.indexOf('?') != -1) {
+        var str = url.split('?Info=')[1];
+        // console.log(str, typeof str);
+        var obj = JSON.parse(str);
+        console.log(obj);
+
+        $("#pdf").attr("name", obj.saveName);
+        get_pdf(obj.pdfURL, "pdf", obj.name);
+
+        var download_all_url = "http://" + SERVER + ":5000/pdf/downloadResult/" + obj.saveName;
+        console.log(obj.saveName);
+        $("#Download-All-zip").attr("href", download_all_url);
+        $("#exit").attr("href", "http://" + SERVER + ":3000/");
+
+        var page_html = "<template slot='title'><i class=\"el-icon-s-data\"></i> CONTENT </template>";
+        var front_quot = "<el-menu-item-group>";
+        var item_html = "<el-menu-item index=\"1-1\" id=\"1-1\" class=\"table\" page=\"PAGENUM\" link=\"PDFLINK\"><el-col :span=\"21\"> CONTENT </el-col> <el-col :span=\"2\"> <el-button type=\"warning\" class=\"Download-Btn-id\" name=\"NAME\" size=\"mini\">下载</el-button></el-col></el-menu-item>";
+        var back_quot = "</el-menu-item-group>";
+        $("#sideList").append(page_html.replace("CONTENT", "识别列表："));
+        for (var i = 0; i < obj.pageNum; i++) {
+            var table_names = obj.dist[i];
+            if (table_names.length > 0) {
+                //TODO: 加一页
+                var k = i + 1;
+                // $("#sideList").append(page_html.replace("CONTENT", "第 " + k + " 页"));
+                $("#sideList").append(front_quot);
+                for (var j = 0; j < table_names.length; j++) {
+                    //TODO: 加一项
+                    $("#sideList").append(item_html.replace("CONTENT", "表 " + table_names[j]).replace("NAME", obj.saveName + "/xlsx/" + table_names[j]).replace("PAGENUM", k).replace("PDFLINK", obj.pdfURL));
+                }
+                $("#sideList").append(back_quot);
+                
+            }
+        
+        }
+        // $("#sedeList").append("<el-button type=\"info\" size=\"medium\" plain disabled>批量下载(.zip)</el-button>")
+    } else {
+        alert("URL ERROR!");
+    }
+
+    $(document).ready(function () {
+        $(".table").click(function () {
+            var pagenum = parseInt($(this).attr("page"));
+            // console.log(typeof pagenum);
+            jump_pdf($(this).attr("link"), "pdf", "test", pagenum);
+        });
+
+        // var zip_url = 'http://' + SERVER + ':8080/' + $("#pdf").attr("name") + "/xlsx/" + $("#pdf").attr("name") + ".zip";
+        // // saveAs(zip_url, $("#pdf").attr("name") + ".zip");
+        // var download_all_url = "http://" + SERVER + ":5000/pdf/downloadResult/" + $("#pdf").attr("name");
+        // console.log(("#pdf").attr("name"));
+        // $("#Download-All-zip").attr("href", download_all_url);
+        // });
+        // $("#Download-All-rar").click(function () {
+        //     var rar_url = 'http://' + SERVER + ':8080/' + $("#pdf").attr("name") + "/xlsx/" + $("#pdf").attr("name") + ".rar";
+        //     saveAs(rar_url, $("#pdf").attr("name") + ".rar");
+        // });
+        $(".Download-Btn-id").click(function () {
+            var xlsx_url = 'http://' + SERVER + ':8080/' + $(this).attr("name") + ".xlsx";
+            console.log(xlsx_url);
+            // window.open(xlsx_url, '_blank');
+
+            // var blob = new Blob(["欢迎访问 hangge.com"], { type: "text/plain;charset=utf-8" });
+            // saveAs(blob, "文件导出测试.txt");
+            saveAs(xlsx_url, $(this).attr("name").split('/')[2] + ".xlsx");
+
+            // var $form = $('<form method="GET"></form>');
+            // $form.attr('action', 'http://'+SERVER+':8080/' + $(this).attr("name") + ".xlsx");
+            // $form.appendTo($('body'));
+            // $form.submit();
+
+            // var request_url = "http://" + 'localhost' + ":5000/pdf/downloadXLSX/" + $(this).attr("name");
+            //TODO: 通过后端下载
+            // var httpRequest = new XMLHttpRequest();
+            // httpRequest.open('GET', request_url, true);
+            // httpRequest.send();
+            // axios.get(request_url, {
+            //     responseType: 'blob'
+            // })
+            //     .then(function (response) {
+            //         // console.log(response);
+            //         let blob = new Blob([res], {
+            //             type: "application/vnd.ms-excel"
+            //         });
+            //         let objectUrl = URL.createObjectURL(blob);
+            //         let a = document.createElement("a");
+            //         a.href = downloadUrl;
+            //         a.download = $(this).attr("name");
+            //         a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+            //         window.URL.revokeObjectURL(blob);
+            //     })
+            //     .catch(function (error) {
+            //         console.log(error);
+            //     });
+        })
+
+
+    });
+</script>
+
+<script>
+    // $("#1-1").text("Hellooo")
+</script>
+
+
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                activeIndex: '1',
+                activeIndex2: '1'
+            };
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            }
+        }
+    })
+</script>
+
+
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>网页嵌入pdf浏览器</title>
+</head>
+
+<body>
+    <div id="pdf">
+        <!-- <embed src="https://ptgmedia.pearsoncmg.com/images/9780672335952/samplepages/0672335956.pdf" width="600" height="500" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html"> -->
+    </div>
+    <!-- <script type="text/javascript" src="pdfobject.js"></script> -->
+    <script type="text/javascript">
+
+        var options = {
+            pdfOpenParams: {
+                view: 'FitV'
+            }
+        };
+        window.onload = function () {
+            if (PDFObject.supportsPDFs) {
+                console.log("Yay, this browser supports inline PDFs.");
+            } else {
+                console.log("Boo, inline PDFs are not supported by this browser");
+            }
+            PDFObject.embed("http://localhost:8080/views/test.pdf", "#pdf", options);
+        }
+        console.log(PDFObject.pdfobjectversion);
+    </script>
+</body>
+
+<script src="js/pdfobject.js"></script>
+
+</html>

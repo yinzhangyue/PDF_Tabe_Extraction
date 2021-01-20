@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html class="no-js">
+
+<head>
+    <!-- Basic Page Needs
+        ================================================== -->
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="icon" href="favicon.ico">
+    <title>Timer Agency Template</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <!-- Mobile Specific Metas
+        ================================================== -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <!-- Template CSS Files
+        ================================================== -->
+    <!-- Twitter Bootstrs CSS -->
+    <link rel="stylesheet" href="plugins/bootstrap/bootstrap.min.css">
+    <!-- Ionicons Fonts Css -->
+    <link rel="stylesheet" href="plugins/ionicons/ionicons.min.css">
+    <!-- animate css -->
+    <link rel="stylesheet" href="plugins/animate-css/animate.css">
+    <!-- Hero area slider css-->
+    <link rel="stylesheet" href="plugins/slider/slider.css">
+    <!-- slick slider -->
+    <link rel="stylesheet" href="plugins/slick/slick.css">
+    <!-- Fancybox -->
+    <link rel="stylesheet" href="plugins/facncybox/jquery.fancybox.css">
+    <!-- hover -->
+    <link rel="stylesheet" href="plugins/hover/hover-min.css">
+    <!-- template main css file -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
+    <!-- <script src="https://unpkg.com/element-ui/lib/index.js"></script> -->
+    <script src="js/vue.js"></script>
+    <script src="js/element-index.js"></script>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script src="js/my_jquery_functions.js"></script>
+</head>
+
+<body>
+
+    <!--
+        ==================================================
+        Header Section Start
+        ================================================== -->
+    <section class="top-bar animated-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                        <a class="navbar-brand" href="index.html">
+                            <i class="el-icon-collection" size="200%"></i>
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ml-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="index.html">主页
+                                        <span class="sr-only">(current)</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="gallery.html">效果展示</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Blog
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="blog1.html">Project Blog</a>
+                                        <a class="dropdown-item" href="blog2.html">Backend Blog</a>
+                                        <a class="dropdown-item" href="blog3.html">Model Blog</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="404.html">历史记录</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="about.html">关于我们</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="404.html">登录</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--
+==================================================
+Slider Section Start
+================================================== -->
+    <section id="hero-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <div class="block wow fadeInUp" data-wow-delay=".3s">
+
+                        <!-- Slider -->
+                        <section class="cd-intro">
+                            <h1 class="wow fadeInUp animated cd-headline slide" data-wow-delay=".4s">
+                                <span>PDF表格提取工具：文档所含，予取予求</span><br>
+                                <span class="cd-words-wrapper">
+                                    <b class="is-visible">有边界表</b>
+                                    <b>半边界表</b>
+                                    <b>无边界表</b>
+                                </span>
+                            </h1>
+                        </section>
+                        <!-- cd-intro -->
+                        <!-- /.slider -->
+                        <h2 class="wow fadeInUp animated" data-wow-delay=".6s">
+                            开发团队：<br> 来自华东师范大学数据学院的<br> 印张悦，牛悦安，梅佳奕
+                        </h2>
+                        <button type="button" id="uploadBtn" class="btn-lines dark light wow fadeInUp animated btn btn-default btn-green hvr-bounce-to-right" data-wow-delay=".9s" target="_blank">
+                            立即使用
+                        </button>
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <input type="file" id="file" name="file" multiple="multiple" onchange="handlefiles(this.files)" style="display:none">
+                        </form>
+                        <!-- //TODO:传文件给服务层 -->
+                        <script>
+                            var uploadBtn = document.getElementById("uploadBtn"),
+                                file = document.getElementById("file");
+                            uploadBtn.addEventListener("click", function(e) {
+                                if (file) {
+                                    file.click();
+                                }
+                                e.preventDefault();
+                            }, false);
+
+                            function handlefiles() {
+                                var formData = new FormData($("#uploadForm")[0]);
+                                $.ajax({
+                                    url: "/upload",
+                                    type: "post",
+                                    data: formData,
+                                    // contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                                    async: true,
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                    success: function(data) {
+                                        console.log(JSON.stringify(data));
+                                        var jump = JSON.stringify(data);
+                                        window.location.href = '/pdf?Info=' + jump;
+                                    }, //TODO:
+                                    // error: function() {
+                                    //     shutdown();
+                                    // },
+                                    // beforeSend: function() {
+                                    //     Loading();
+                                    // }
+                                });
+                            }
+                            // function F_Open_dialog() {
+                            //     var file = document.getElementById("file").click();
+                            //     // var filePDF = file.files[0];
+                            //     var formData = new FormData();
+                            //     formData.append("PDF", file);
+                            //     console.log(formData);
+                            //     $("#file").on("change", function() {
+                            //         $.ajax({
+                            //             type: 'POST',
+                            //             url: 'http://localhost:3000/upload',
+                            //             data: formData,
+                            //             cache: false,
+                            //             processData: false,
+                            //             contentType: "form-data"
+                            //         }).success(function(data) {
+
+                            //         }).error(function(error) {
+                            //             alert("上传失败！");
+                            //             console.log(error);
+                            //         });
+                            //     });
+                            // }
+                        </script>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--
+==================================================
+About Section Start
+================================================== -->
+    <section id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="block wow fadeInLeft" data-wow-delay=".3s" data-wow-duration="500ms">
+                        <h2>
+                            关于此项目
+                        </h2>
+                        <p>
+                            &emsp;&emsp;数字化时代的来临，让电子文档正在快速取代纸质文档。这些电子文档中包含大量基于表格的信息，
+                            表格信息是企业数据分析的重要来源，过往表格信息的提取主要依靠人工来完成，效率低且容易出错。顺应办公自动化的潮流，
+                            我们提出了pdfTableDetection，模型可以自动识别并提取PDF中的表格信息，模型主要分为表格检测模型、表格文字提取模型、
+                            表格重构模型和表格线绘制模型。
+                        </p>
+                    </div>
+
+                </div>
+                <!-- <div class="col-md-6 col-sm-6">
+                    <div class="block wow fadeInRight" data-wow-delay=".3s" data-wow-duration="500ms">
+                        <img src="images/icons/dase.png" alt="">
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </section>
+    <!-- /#about -->
+
+
+    <!--
+==================================================
+Portfolio Section Start
+================================================== -->
+    <section id="works" class="works">
+        <div class="container">
+            <div class="section-heading">
+                <h1 class="title wow fadeInDown" data-wow-delay=".3s">效果展示</h1>
+                <p class="wow fadeInDown" data-wow-delay=".5s">
+                    本项目适应有表格线、无表格线、中文、英文等多种情况
+                </p>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <figure class="wow fadeInLeft animated" data-wow-duration="500ms" data-wow-delay="300ms">
+                        <div class="img-wrapper">
+                            <img src="images/portfolio/item-4.png" class="img-fluid" alt="this is a title">
+                            <div class="overlay">
+                                <div class="buttons">
+                                    <a rel="gallery" class="fancybox" href="images/portfolio/item-4.png">Demo</a>
+                                </div>
+                            </div>
+                        </div>
+                        <figcaption>
+                            <h4>
+                                <a href="#">
+                                    无表格线提取
+                                </a>
+                            </h4>
+                            <p>
+                                繁体中文
+                            </p>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <figure class="wow fadeInLeft animated" data-wow-duration="500ms" data-wow-delay="300ms">
+                        <div class="img-wrapper">
+                            <img src="images/portfolio/item-5.png" class="img-fluid" alt="this is a title">
+                            <div class="overlay">
+                                <div class="buttons">
+                                    <a rel="gallery" class="fancybox" href="images/portfolio/item-5.png">Demo</a>
+                                </div>
+                            </div>
+                        </div>
+                        <figcaption>
+                            <h4>
+                                <a href="#">
+                                    有表格线
+                                </a>
+                            </h4>
+                            <p>
+                                简体中文
+                            </p>
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- #works -->
+    <!--
+==================================================
+Portfolio Section Start
+================================================== -->
+    <section id="feature">
+        <div class="container">
+            <div class="section-heading">
+                <h1 class="title wow fadeInDown" data-wow-delay=".3s">项目优势</h1>
+                <p class="wow fadeInDown" data-wow-delay=".5s">
+                    本项目由EC&U团队倾情打造
+                </p>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-lg-4">
+                    <div class="media wow fadeInUp animated" data-wow-duration="500ms" data-wow-delay="300ms">
+                        <div class="media-left">
+                            <div class="icon">
+                                <i class="ion-ios-flask-outline"></i>
+                            </div>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">简洁</h4>
+                            <p>上传pdf，直接转化为xlsx文件</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="media wow fadeInDown animated" data-wow-duration="500ms" data-wow-delay="600ms">
+                        <div class="media-left">
+                            <div class="icon">
+                                <i class="ion-ios-lightbulb-outline"></i>
+                            </div>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">精准</h4>
+                            <p>在ICDAR 13数据及上，模型准确率和模型召回率分别达到0.976，0.973</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="media wow fadeInDown animated" data-wow-duration="500ms" data-wow-delay="900ms">
+                        <div class="media-left">
+                            <div class="icon">
+                                <i class="ion-ios-lightbulb-outline"></i>
+                            </div>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">舒适</h4>
+                            <p>网站提供pdf提取表格预览功能，可以在线查看模型对pdf的表格定位，划线和转化</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /#feature -->
+
+
+
+    <!--
+            ==================================================
+            Footer Section Start
+            ================================================== -->
+            <footer id="footer">
+                <div class="container">
+                    <div class="row content-justify-between">
+                        <div class="col-md-8 col-12 text-center text-lg-left text-md-left">
+                            <p class="copyright">Copyright: Design and Developed by Dylan Niu.
+                            </p>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <!-- Social Media -->
+                            <ul class="social text-center text-md-right text-lg-right">
+                                <li>
+                                    <a href="http://gitea.shuishan.net.cn/10174503110/pdfTableDetection" class="Github">
+                                        <i class="ion-social-github"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+    <!-- /#footer -->
+
+    <!-- Template Javascript Files
+	================================================== -->
+    <!-- jquery -->
+    <script src="plugins/jQurey/jquery.min.js"></script>
+    <!-- Form Validation -->
+    <script src="plugins/form-validation/jquery.form.js"></script>
+    <script src="plugins/form-validation/jquery.validate.min.js"></script>
+    <!-- slick slider -->
+    <script src="plugins/slick/slick.min.js"></script>
+    <!-- bootstrap js -->
+    <script src="plugins/bootstrap/bootstrap.min.js"></script>
+    <!-- wow js -->
+    <script src="plugins/wow-js/wow.min.js"></script>
+    <!-- slider js -->
+    <script src="plugins/slider/slider.js"></script>
+    <!-- Fancybox -->
+    <script src="plugins/facncybox/jquery.fancybox.js"></script>
+    <!-- template main js -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>
